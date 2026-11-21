@@ -97,7 +97,7 @@ function startEmbeddedEngine() {
     if (fs.existsSync(mysqldExe)) {
       mysqlProcess = spawn(mysqldExe, [
         '--no-defaults',
-        `--datadir=${dbDataDir}`,
+        `--datadir=${dbDataDir.replace(/\\/g, '/')}`,
         `--port=${MYSQL_PORT}`,
         '--bind-address=127.0.0.1',
         '--console'
@@ -227,6 +227,7 @@ function checkServerReady(port, maxTries, intervalMs, callback) {
   function attempt() {
     tries++;
     const req = http.get(`http://127.0.0.1:${port}/app.html`, (res) => {
+      res.resume();
       callback(true);
     });
     req.on('error', () => {
@@ -236,7 +237,7 @@ function checkServerReady(port, maxTries, intervalMs, callback) {
         callback(false);
       }
     });
-    req.setTimeout(500, () => {
+    req.setTimeout(800, () => {
       req.abort();
     });
   }
