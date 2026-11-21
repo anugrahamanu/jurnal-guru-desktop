@@ -1,0 +1,55 @@
+================================================================================
+   PANDUAN APLIKASI DESKTOP WINDOWS (STANDALONE 100% OFFLINE - TANPA XAMPP)
+================================================================================
+
+Halo Pak Anugrah! Aplikasi desktop Windows Jurnal Guru Digital telah berhasil
+dikemas menjadi APLIKASI STANDALONE MURNI (Layaknya software desktop profesional).
+
+--------------------------------------------------------------------------------
+1. KEUNGGULAN UTAMA (ALL-IN-ONE STANDALONE)
+--------------------------------------------------------------------------------
+✅ TANPA PERLU XAMPP:
+   Guru tidak perlu menginstal XAMPP, Apache, MySQL, atau phpMyAdmin sama sekali.
+   Engine database dan server lokal sudah TERTANAM OTOMATIS di dalam aplikasi!
+
+✅ 100% BEBAS INTERNET (OFFLINE):
+   Tidak butuh kuota atau sinyal WiFi. Semua data tersimpan privat di laptop masing-masing.
+
+✅ TAMPILAN LOGIN & DAFTAR KHUSUS DESKTOP:
+   - Dilengkapi tab switch cepat: [Masuk] | [Buat Akun Baru].
+   - Tanpa verifikasi Cloudflare Turnstile yang rumit.
+   - Tanpa verifikasi CAPTCHA angka yang membingungkan.
+   - Tanpa tombol Google Login yang membutuhkan internet.
+   - Pendaftaran guru baru instan (hanya Nama, Username, dan Password).
+   - Setelah klik "Daftar", otomatis langsung masuk ke Dashboard!
+
+✅ PENYIMPANAN AMAN DI KOMPUTER MASING-MASING:
+   Data database tersimpan rapi di folder user Windows:
+   %APPDATA%\jurnal-guru-desktop\db_data\
+   Bisa dibuka sewaktu-waktu lewat Menu Aplikasi:
+   "Mode Database" -> "Buka Folder Database di Komputer Ini..." untuk backup data.
+
+--------------------------------------------------------------------------------
+2. LOKASI FILE INSTALLER (.EXE) SIAP PAKAI
+--------------------------------------------------------------------------------
+Folder penyimpanan:
+desktop-app\dist\
+
+A. Jurnal Guru Digital Setup 1.0.0.exe (~132 MB)
+   - Tipe: File Installer Resmi Windows.
+   - Cara Pakai: Klik 2x file ini di laptop guru manapun (Windows 10 / 11).
+   - Otomatis memasang shortcut di Desktop dan Start Menu Windows.
+
+B. Jurnal Guru Digital 1.0.0.exe (~132 MB)
+   - Tipe: Versi Portable (Tanpa Instalasi).
+   - Cara Pakai: Bisa langsung dijalankan dari Flashdisk di komputer manapun.
+
+--------------------------------------------------------------------------------
+3. CARA PENGGUNAAN OLEH REKAN GURU
+--------------------------------------------------------------------------------
+1. Kirim file "Jurnal Guru Digital Setup 1.0.0.exe" ke guru lain (via Flashdisk / Google Drive).
+2. Guru lain cukup klik 2x file Setup tersebut untuk menginstall.
+3. Buka ikon "Jurnal Guru Digital" di Desktop laptop mereka.
+4. Klik tab "Buat Akun Baru", masukkan Nama Lengkap, Username, dan Password.
+5. Selesai! Guru langsung bisa mengelola jurnal, absensi, dan nilai secara offline!
+================================================================================

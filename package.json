@@ -1,0 +1,57 @@
+{
+  "name": "jurnal-guru-desktop",
+  "version": "1.0.0",
+  "description": "Aplikasi Desktop Windows Resmi Jurnal Guru Digital & LMS Kurikulum Merdeka",
+  "main": "main.js",
+  "author": "Anugrah Amanu Pratama <anugrahmanu885@gmail.com>",
+  "license": "ISC",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "build:portable": "electron-builder --win portable",
+    "build:installer": "electron-builder --win nsis",
+    "dist": "electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^33.4.11",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "id.my.gurugenz.desktop",
+    "productName": "Jurnal Guru Digital",
+    "copyright": "Copyright © 2026 Anugrah Amanu Pratama",
+    "directories": {
+      "output": "dist"
+    },
+    "extraResources": [
+      {
+        "from": "engine",
+        "to": "engine"
+      }
+    ],
+    "win": {
+      "icon": "icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Jurnal Guru Digital"
+    }
+  }
+}

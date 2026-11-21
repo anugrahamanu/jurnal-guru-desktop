@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Database Lokal Belum Aktif - Jurnal Guru Digital</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    body {
+      background: #09090b;
+      color: #f4f4f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .card {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 18px;
+      padding: 40px;
+      max-width: 540px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 30px -5px rgba(0, 0, 0, 0.6);
+    }
+    .icon {
+      width: 76px;
+      height: 76px;
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      color: #3b82f6;
+      font-size: 36px;
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #fafafa;
+    }
+    p {
+      color: #a1a1aa;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .instructions {
+      background: #121215;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: left;
+      margin-bottom: 26px;
+      font-size: 13px;
+      color: #d4d4d8;
+    }
+    .instructions ol {
+      padding-left: 20px;
+      margin-top: 8px;
+      line-height: 1.8;
+    }
+    .instructions strong {
+      color: #60a5fa;
+    }
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 13px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border: none;
+    }
+    .btn-primary {
+      background: #2563eb;
+      color: #ffffff;
+    }
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+    .btn-secondary {
+      background: #27272a;
+      color: #e4e4e7;
+    }
+    .btn-secondary:hover {
+      background: #3f3f46;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">💾</div>
+    <h1>Database Lokal Belum Terdeteksi</h1>
+    <p>Aplikasi sedang berjalan dalam <strong>Mode Database Lokal (Offline)</strong> agar semua data tersimpan di laptop Anda sendiri tanpa internet.</p>
+    
+    <div class="instructions">
+      <strong>Langkah Mengaktifkan Database di Komputer Ini:</strong>
+      <ol>
+        <li>Buka aplikasi <strong>XAMPP Control Panel</strong> di laptop Anda.</li>
+        <li>Klik tombol <strong>Start</strong> pada baris <strong>Apache</strong>.</li>
+        <li>Klik tombol <strong>Start</strong> pada baris <strong>MySQL</strong>.</li>
+        <li>Setelah keduanya berwarna hijau, klik tombol di bawah ini:</li>
+      </ol>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="retryLocal()">🔄 Coba Hubungkan Database Lokal</button>
+      <button class="btn btn-secondary" onclick="openOnline()">🌐 Beralih ke Server Online (Cloud)</button>
+    </div>
+  </div>
+
+  <script>
+    function retryLocal() {
+      window.location.href = 'http://localhost/Jurnal%20Guru/app.html';
+    }
+    function openOnline() {
+      window.location.href = 'https://gurugenz.my.id/app.html';
+    }
+  </script>
+</body>
+</html>
