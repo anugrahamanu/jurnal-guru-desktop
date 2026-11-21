@@ -32,8 +32,6 @@ const phpIni = path.join(engineDir, 'php', 'php.ini');
 const routerPhp = path.join(engineDir, 'router.php');
 const htdocsDir = path.join(engineDir, 'htdocs');
 
-const currentMode = 'local'; // 100% OFFLINE LOCAL STANDALONE
-
 // Ensure single instance lock
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
@@ -134,7 +132,7 @@ function getBaseUrl() {
 }
 
 function getAppTitle() {
-  return 'Jurnal Guru Digital & LMS (Aplikasi Desktop Standalone - 100% Offline)';
+  return 'Jurnal Guru Digital (Aplikasi Desktop Standalone - 100% Offline)';
 }
 
 function createWindow() {
@@ -216,7 +214,7 @@ function checkServerReady(port, maxTries, intervalMs, callback) {
 function createTray() {
   const iconPath = path.join(__dirname, 'icon.ico');
   tray = new Tray(iconPath);
-  tray.setToolTip('Jurnal Guru Digital & LMS (Database Komputer Lokal)');
+  tray.setToolTip('Jurnal Guru Digital (Database Komputer Lokal)');
 
   const contextMenu = Menu.buildFromTemplate([
     {
@@ -225,15 +223,6 @@ function createTray() {
         if (mainWindow) {
           mainWindow.show();
           mainWindow.focus();
-        }
-      }
-    },
-    {
-      label: 'Buka LMS Siswa',
-      click: () => {
-        if (mainWindow) {
-          mainWindow.show();
-          mainWindow.loadURL(`${getBaseUrl()}/lms.html`);
         }
       }
     },
@@ -298,21 +287,6 @@ function setupAppMenu() {
           label: 'Dashboard Jurnal Guru',
           accelerator: 'CmdOrCtrl+1',
           click: () => mainWindow && mainWindow.loadURL(`${getBaseUrl()}/app.html`)
-        },
-        {
-          label: 'LMS Pembelajaran Siswa',
-          accelerator: 'CmdOrCtrl+2',
-          click: () => mainWindow && mainWindow.loadURL(`${getBaseUrl()}/lms.html`)
-        },
-        {
-          label: 'Kelola Bank Soal & Ujian',
-          accelerator: 'CmdOrCtrl+3',
-          click: () => mainWindow && mainWindow.loadURL(`${getBaseUrl()}/kelola-soal.html`)
-        },
-        {
-          label: 'Portal Berbagi Modul (Share)',
-          accelerator: 'CmdOrCtrl+4',
-          click: () => mainWindow && mainWindow.loadURL(`${getBaseUrl()}/share.html`)
         },
         { type: 'separator' },
         {
@@ -402,7 +376,7 @@ function setupAppMenu() {
             dialog.showMessageBox(mainWindow, {
               type: 'info',
               title: 'Tentang Jurnal Guru Digital',
-              message: 'Jurnal Guru Digital & LMS Kurikulum Merdeka',
+              message: 'Jurnal Guru Digital - Kurikulum Merdeka',
               detail: 'Versi 1.0.0 (Windows Desktop Standalone Edition)\n\nAplikasi desktop mandiri dengan engine database lokal tertanam (Zero Configuration).\n100% Offline: Data tersimpan di laptop Anda tanpa memerlukan XAMPP dan tanpa memerlukan koneksi internet.',
               buttons: ['OK']
             });
