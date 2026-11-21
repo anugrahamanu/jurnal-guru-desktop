@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Database Lokal Belum Aktif - Jurnal Guru Digital</title>
+  <title>Memulai Database Mandiri - Jurnal Guru Digital</title>
   <style>
     * {
       box-sizing: border-box;
@@ -25,7 +25,7 @@
       border: 1px solid #27272a;
       border-radius: 18px;
       padding: 40px;
-      max-width: 540px;
+      max-width: 520px;
       width: 100%;
       text-align: center;
       box-shadow: 0 25px 30px -5px rgba(0, 0, 0, 0.6);
@@ -64,11 +64,7 @@
       margin-bottom: 26px;
       font-size: 13px;
       color: #d4d4d8;
-    }
-    .instructions ol {
-      padding-left: 20px;
-      margin-top: 8px;
-      line-height: 1.8;
+      line-height: 1.7;
     }
     .instructions strong {
       color: #60a5fa;
@@ -98,44 +94,34 @@
     .btn-primary:hover {
       background: #1d4ed8;
     }
-    .btn-secondary {
-      background: #27272a;
-      color: #e4e4e7;
-    }
-    .btn-secondary:hover {
-      background: #3f3f46;
-    }
   </style>
 </head>
 <body>
   <div class="card">
     <div class="icon">💾</div>
-    <h1>Database Lokal Belum Terdeteksi</h1>
-    <p>Aplikasi sedang berjalan dalam <strong>Mode Database Lokal (Offline)</strong> agar semua data tersimpan di laptop Anda sendiri tanpa internet.</p>
+    <h1>Memuat Database Lokal Mandiri</h1>
+    <p>Aplikasi sedang menyiapkan engine database mandiri di laptop Anda (100% Offline tanpa internet & tanpa XAMPP).</p>
     
     <div class="instructions">
-      <strong>Langkah Mengaktifkan Database di Komputer Ini:</strong>
-      <ol>
-        <li>Buka aplikasi <strong>XAMPP Control Panel</strong> di laptop Anda.</li>
-        <li>Klik tombol <strong>Start</strong> pada baris <strong>Apache</strong>.</li>
-        <li>Klik tombol <strong>Start</strong> pada baris <strong>MySQL</strong>.</li>
-        <li>Setelah keduanya berwarna hijau, klik tombol di bawah ini:</li>
-      </ol>
+      <p>💡 <strong>Status Engine:</strong></p>
+      <p>Proses inisialisasi awal database lokal sedang berlangsung. Jika halaman belum terbuka secara otomatis dalam beberapa detik, silakan klik tombol di bawah untuk memuat ulang:</p>
     </div>
 
     <div class="btn-group">
-      <button class="btn btn-primary" onclick="retryLocal()">🔄 Coba Hubungkan Database Lokal</button>
-      <button class="btn btn-secondary" onclick="openOnline()">🌐 Beralih ke Server Online (Cloud)</button>
+      <button class="btn btn-primary" onclick="retryLocal()">🔄 Muat Ulang Aplikasi</button>
     </div>
   </div>
 
   <script>
     function retryLocal() {
-      window.location.href = 'http://localhost/Jurnal%20Guru/app.html';
+      window.location.href = 'http://127.0.0.1:48201/app.html';
     }
-    function openOnline() {
-      window.location.href = 'https://gurugenz.my.id/app.html';
-    }
+    // Auto-retry every 2 seconds
+    setTimeout(function() {
+      fetch('http://127.0.0.1:48201/app.html', { method: 'HEAD' })
+        .then(function() { retryLocal(); })
+        .catch(function() {});
+    }, 2000);
   </script>
 </body>
 </html>

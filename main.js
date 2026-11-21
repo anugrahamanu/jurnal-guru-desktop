@@ -8,10 +8,7 @@ const LOCAL_PORT = 48201;
 const MYSQL_PORT = 3308;
 
 const LOCAL_BASE = `http://127.0.0.1:${LOCAL_PORT}`;
-const ONLINE_BASE = 'https://gurugenz.my.id';
-
 const LOCAL_URL = `${LOCAL_BASE}/app.html`;
-const ONLINE_URL = `${ONLINE_BASE}/app.html`;
 
 let mainWindow = null;
 let tray = null;
@@ -35,26 +32,7 @@ const phpIni = path.join(engineDir, 'php', 'php.ini');
 const routerPhp = path.join(engineDir, 'router.php');
 const htdocsDir = path.join(engineDir, 'htdocs');
 
-// Persistent mode config
-const configPath = path.join(userDataDir, 'app-mode.json');
-
-function getSavedMode() {
-  try {
-    if (fs.existsSync(configPath)) {
-      const data = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-      if (data && data.mode) return data.mode;
-    }
-  } catch (e) {}
-  return 'local'; // Default is 100% OFFLINE LOCAL DATABASE
-}
-
-function saveMode(mode) {
-  try {
-    fs.writeFileSync(configPath, JSON.stringify({ mode: mode }), 'utf8');
-  } catch (e) {}
-}
-
-let currentMode = getSavedMode();
+const currentMode = 'local'; // 100% OFFLINE LOCAL STANDALONE
 
 // Ensure single instance lock
 const gotTheLock = app.requestSingleInstanceLock();
@@ -152,13 +130,11 @@ function stopEmbeddedEngine() {
 }
 
 function getBaseUrl() {
-  return currentMode === 'online' ? ONLINE_BASE : LOCAL_BASE;
+  return LOCAL_BASE;
 }
 
 function getAppTitle() {
-  return currentMode === 'online'
-    ? 'Jurnal Guru Digital & LMS (Mode Online - Server Cloud)'
-    : 'Jurnal Guru Digital & LMS (Mode Offline - Database Komputer Lokal)';
+  return 'Jurnal Guru Digital & LMS (Aplikasi Desktop Standalone - 100% Offline)';
 }
 
 function createWindow() {
@@ -183,12 +159,12 @@ function createWindow() {
     mainWindow.show();
   });
 
-  // Load the web app according to currentMode (default: local offline)
+  // Load the offline application
   loadTargetUrl();
 
   // Handle external links opening in default browser
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith('https://gurugenz.my.id') || url.startsWith('http://localhost') || url.startsWith('http://127.0.0.1')) {
+    if (url.startsWith('http://localhost') || url.startsWith('http://127.0.0.1')) {
       return { action: 'allow' };
     }
     shell.openExternal(url);
@@ -203,15 +179,8 @@ function createWindow() {
 function loadTargetUrl() {
   if (!mainWindow) return;
 
-  if (currentMode === 'online') {
-    mainWindow.loadURL(ONLINE_URL).catch(() => {
-      mainWindow.loadFile(path.join(__dirname, 'offline.html'));
-    });
-    return;
-  }
-
-  // If local mode, check server readiness then load
-  checkServerReady(LOCAL_PORT, 20, 150, (ready) => {
+  // Check local embedded server readiness then load
+  checkServerReady(LOCAL_PORT, 25, 200, (ready) => {
     if (ready && mainWindow) {
       mainWindow.loadURL(LOCAL_URL).catch(() => {
         mainWindow.loadFile(path.join(__dirname, 'offline.html'));
@@ -244,16 +213,6 @@ function checkServerReady(port, maxTries, intervalMs, callback) {
   attempt();
 }
 
-function switchDatabaseMode(newMode) {
-  currentMode = newMode;
-  saveMode(newMode);
-  setupAppMenu();
-  if (mainWindow) {
-    mainWindow.setTitle(getAppTitle());
-    loadTargetUrl();
-  }
-}
-
 function createTray() {
   const iconPath = path.join(__dirname, 'icon.ico');
   tray = new Tray(iconPath);
@@ -280,7 +239,7 @@ function createTray() {
     },
     { type: 'separator' },
     {
-      label: currentMode === 'local' ? '● Mode: Database Komputer Lokal (Offline)' : '● Mode: Database Server Online',
+      label: '● Database: Komputer Lokal (100% Offline)',
       enabled: false
     },
     { type: 'separator' },
@@ -305,25 +264,10 @@ function createTray() {
 function setupAppMenu() {
   const template = [
     {
-      label: '📁 Mode Database',
+      label: '💾 Database Lokal',
       submenu: [
         {
-          label: '💻 Database Komputer Lokal (Offline - Tanpa Internet)',
-          type: 'radio',
-          checked: currentMode === 'local',
-          accelerator: 'CmdOrCtrl+Shift+L',
-          click: () => switchDatabaseMode('local')
-        },
-        {
-          label: '🌐 Database Server Online (gurugenz.my.id)',
-          type: 'radio',
-          checked: currentMode === 'online',
-          accelerator: 'CmdOrCtrl+Shift+O',
-          click: () => switchDatabaseMode('online')
-        },
-        { type: 'separator' },
-        {
-          label: '📂 Buka Folder Database di Komputer Ini...',
+          label: '📂 Buka Folder Penyimpanan Database...',
           click: () => {
             if (!fs.existsSync(dbDataDir)) {
               fs.mkdirSync(dbDataDir, { recursive: true });
@@ -331,12 +275,11 @@ function setupAppMenu() {
             shell.openPath(dbDataDir);
           }
         },
+        { type: 'separator' },
         {
-          label: 'ℹ️ Informasi Mode Database',
+          label: 'ℹ️ Informasi Database Mandiri',
           click: () => {
-            const info = currentMode === 'local'
-              ? `Mode Saat Ini: DATABASE KOMPUTER LOKAL (100% OFFLINE)\n\nSemua data tersimpan privat di folder:\n${dbDataDir}\n\nTidak memerlukan XAMPP dan tidak memerlukan koneksi internet!`
-              : `Mode Saat Ini: DATABASE SERVER ONLINE (CLOUD)\n\nSemua data tersimpan di server cloud internet https://gurugenz.my.id.`;
+            const info = `Mode: DATABASE KOMPUTER LOKAL (100% OFFLINE)\n\nSemua data tersimpan privat di folder:\n${dbDataDir}\n\nAplikasi berjalan mandiri tanpa memerlukan internet dan tanpa XAMPP!`;
             dialog.showMessageBox(mainWindow, {
               type: 'info',
               title: 'Informasi Database Jurnal Guru',
@@ -460,7 +403,7 @@ function setupAppMenu() {
               type: 'info',
               title: 'Tentang Jurnal Guru Digital',
               message: 'Jurnal Guru Digital & LMS Kurikulum Merdeka',
-              detail: 'Versi 1.0.0 (Windows Desktop Standalone Edition)\n\nAplikasi desktop mandiri dengan engine database lokal tertanam (Zero Configuration).\nTidak memerlukan XAMPP dan tidak memerlukan koneksi internet.',
+              detail: 'Versi 1.0.0 (Windows Desktop Standalone Edition)\n\nAplikasi desktop mandiri dengan engine database lokal tertanam (Zero Configuration).\n100% Offline: Data tersimpan di laptop Anda tanpa memerlukan XAMPP dan tanpa memerlukan koneksi internet.',
               buttons: ['OK']
             });
           }

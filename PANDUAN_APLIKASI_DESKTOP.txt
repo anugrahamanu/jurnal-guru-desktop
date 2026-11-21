@@ -27,7 +27,7 @@ dikemas menjadi APLIKASI STANDALONE MURNI (Layaknya software desktop profesional
    Data database tersimpan rapi di folder user Windows:
    %APPDATA%\jurnal-guru-desktop\db_data\
    Bisa dibuka sewaktu-waktu lewat Menu Aplikasi:
-   "Mode Database" -> "Buka Folder Database di Komputer Ini..." untuk backup data.
+   "Database Lokal" -> "Buka Folder Penyimpanan Database..." untuk backup data.
 
 --------------------------------------------------------------------------------
 2. LOKASI FILE INSTALLER (.EXE) SIAP PAKAI
