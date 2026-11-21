@@ -161,6 +161,13 @@ function createWindow() {
   loadTargetUrl();
 
   // Handle external links opening in default browser
+  mainWindow.webContents.on('will-navigate', (event, url) => {
+    if (url.includes('index.html')) {
+      event.preventDefault();
+      mainWindow.loadURL(LOCAL_URL);
+    }
+  });
+
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     if (url.startsWith('http://localhost') || url.startsWith('http://127.0.0.1')) {
       return { action: 'allow' };
