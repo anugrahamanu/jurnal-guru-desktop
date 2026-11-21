@@ -149,7 +149,8 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
-      spellcheck: true
+      spellcheck: true,
+      devTools: false // PROTEKSI EKSTRA: Nonaktifkan DevTools Chromium
     }
   });
 
@@ -157,20 +158,62 @@ function createWindow() {
     mainWindow.show();
   });
 
+  // PROTEKSI EKSTRA: Blokir Shortcut DevTools (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U)
+  mainWindow.webContents.on('before-input-event', (event, input) => {
+    // F12
+    if (input.key === 'F12') {
+      event.preventDefault();
+      return;
+    }
+    // Ctrl+Shift+I / J / C
+    if (input.control && input.shift && ['I', 'i', 'J', 'j', 'C', 'c'].includes(input.key)) {
+      event.preventDefault();
+      return;
+    }
+    // Ctrl+U (View Source)
+    if (input.control && ['u', 'U'].includes(input.key)) {
+      event.preventDefault();
+      return;
+    }
+  });
+
+  // PROTEKSI EKSTRA: Nonaktifkan Klik Kanan / Context Menu untuk mencegah Inspect Element
+  mainWindow.webContents.on('context-menu', (event) => {
+    event.preventDefault();
+  });
+
+  // PROTEKSI EKSTRA: Tutup otomatis jika DevTools sempat terbuka secara tak terduga
+  mainWindow.webContents.on('devtools-opened', () => {
+    mainWindow.webContents.closeDevTools();
+  });
+
   // Load the offline application
   loadTargetUrl();
 
-  // Handle external links opening in default browser
+  // Handle external links opening in default browser & prevent unauthorized navigation
   mainWindow.webContents.on('will-navigate', (event, url) => {
     if (url.includes('index.html')) {
       event.preventDefault();
       mainWindow.loadURL(LOCAL_URL);
+      return;
+    }
+    // Mencegah navigasi ke luar localhost di dalam jendela utama
+    if (!url.startsWith(LOCAL_BASE)) {
+      event.preventDefault();
+      shell.openExternal(url);
     }
   });
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     if (url.startsWith('http://localhost') || url.startsWith('http://127.0.0.1')) {
-      return { action: 'allow' };
+      return {
+        action: 'allow',
+        overrideBrowserWindowOptions: {
+          webPreferences: {
+            devTools: false
+          }
+        }
+      };
     }
     shell.openExternal(url);
     return { action: 'deny' };
@@ -263,23 +306,13 @@ function setupAppMenu() {
       label: '💾 Database Lokal',
       submenu: [
         {
-          label: '📂 Buka Folder Penyimpanan Database...',
+          label: 'ℹ️ Status Database Mandiri Terproteksi',
           click: () => {
-            if (!fs.existsSync(dbDataDir)) {
-              fs.mkdirSync(dbDataDir, { recursive: true });
-            }
-            shell.openPath(dbDataDir);
-          }
-        },
-        { type: 'separator' },
-        {
-          label: 'ℹ️ Informasi Database Mandiri',
-          click: () => {
-            const info = `Mode: DATABASE KOMPUTER LOKAL (100% OFFLINE)\n\nSemua data tersimpan privat di folder:\n${dbDataDir}\n\nAplikasi berjalan mandiri tanpa memerlukan internet dan tanpa XAMPP!`;
+            const info = `Mode: DATABASE KOMPUTER LOKAL (100% OFFLINE)\n\nStatus: Terlindungi & Terisolasi.\nSemua data tersimpan privat di laptop Anda.\n\nAplikasi berjalan mandiri tanpa memerlukan internet dan tanpa XAMPP!`;
             dialog.showMessageBox(mainWindow, {
               type: 'info',
               title: 'Informasi Database Jurnal Guru',
-              message: 'Penyimpanan Database Mandiri',
+              message: 'Penyimpanan Database Mandiri Terproteksi',
               detail: info,
               buttons: ['Tutup']
             });
@@ -369,22 +402,13 @@ function setupAppMenu() {
       label: 'Bantuan',
       submenu: [
         {
-          label: 'Buka di Browser Luar (Chrome/Edge)',
-          click: () => {
-            if (mainWindow) {
-              shell.openExternal(mainWindow.webContents.getURL() || getBaseUrl());
-            }
-          }
-        },
-        { type: 'separator' },
-        {
           label: 'Tentang Jurnal Guru Digital',
           click: () => {
             dialog.showMessageBox(mainWindow, {
               type: 'info',
               title: 'Tentang Jurnal Guru Digital',
               message: 'Jurnal Guru Digital - Kurikulum Merdeka',
-              detail: 'Versi 1.0.0 (Windows Desktop Standalone Edition)\n\nAplikasi desktop mandiri dengan engine database lokal tertanam (Zero Configuration).\n100% Offline: Data tersimpan di laptop Anda tanpa memerlukan XAMPP dan tanpa memerlukan koneksi internet.',
+              detail: 'Versi 1.0.0 (Windows Desktop Standalone Edition - Proteksi Ekstra)\n\nAplikasi desktop mandiri dengan engine database lokal tertanam (Zero Configuration).\n100% Offline: Data tersimpan aman di laptop Anda tanpa memerlukan XAMPP dan tanpa memerlukan koneksi internet.',
               buttons: ['OK']
             });
           }

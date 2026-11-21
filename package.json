@@ -23,6 +23,7 @@
     "directories": {
       "output": "dist"
     },
+    "asar": true,
     "extraResources": [
       {
         "from": "engine",
