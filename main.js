@@ -19,6 +19,9 @@ let phpProcess = null;
 
 // Paths for embedded engine
 const isPackaged = app.isPackaged;
+const isWin = process.platform === 'win32';
+const isLinux = process.platform === 'linux';
+
 const engineDir = isPackaged
   ? path.join(process.resourcesPath, 'engine')
   : path.join(__dirname, 'engine');
@@ -26,8 +29,41 @@ const engineDir = isPackaged
 const userDataDir = app.getPath('userData');
 const dbDataDir = path.join(userDataDir, 'db_data');
 const templateDataDir = path.join(engineDir, 'data');
-const mysqldExe = path.join(engineDir, 'mysql', 'bin', 'mysqld.exe');
-const phpExe = path.join(engineDir, 'php', 'php.exe');
+
+// Helper untuk menemukan executable di engine lokal atau system PATH (Windows / Linux)
+function resolveExecutable(preferredPath, fallbackCommand) {
+  if (preferredPath && fs.existsSync(preferredPath)) {
+    return preferredPath;
+  }
+  if (fallbackCommand) {
+    try {
+      const cmd = isWin ? `where ${fallbackCommand}` : `which ${fallbackCommand}`;
+      const output = execSync(cmd, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }).trim().split('\n')[0].trim();
+      if (output && fs.existsSync(output)) {
+        return output;
+      }
+    } catch (e) {}
+  }
+  return null;
+}
+
+function getAppIcon() {
+  if (isWin) {
+    return path.join(__dirname, 'icon.ico');
+  }
+  const pngIcon = path.join(__dirname, 'icon.png');
+  if (fs.existsSync(pngIcon)) return pngIcon;
+  return path.join(__dirname, 'icon.ico');
+}
+
+const mysqldExe = isWin
+  ? resolveExecutable(path.join(engineDir, 'mysql', 'bin', 'mysqld.exe'), 'mysqld.exe')
+  : resolveExecutable(path.join(engineDir, 'mysql', 'bin', 'mysqld'), 'mysqld') || resolveExecutable(null, 'mariadbd') || resolveExecutable(null, 'mariadb');
+
+const phpExe = isWin
+  ? resolveExecutable(path.join(engineDir, 'php', 'php.exe'), 'php.exe')
+  : resolveExecutable(path.join(engineDir, 'php', 'bin', 'php'), 'php') || resolveExecutable(null, 'php8.3') || resolveExecutable(null, 'php8.2') || resolveExecutable(null, 'php8.1') || resolveExecutable(null, 'php');
+
 const phpIni = path.join(engineDir, 'php', 'php.ini');
 const routerPhp = path.join(engineDir, 'router.php');
 const htdocsDir = path.join(engineDir, 'htdocs');
@@ -70,16 +106,20 @@ function startEmbeddedEngine() {
     }
 
     // 2. Spawn portable MariaDB on port 3308
-    if (fs.existsSync(mysqldExe)) {
-      mysqlProcess = spawn(mysqldExe, [
+    if (mysqldExe && fs.existsSync(mysqldExe)) {
+      const mysqlArgs = [
         '--no-defaults',
         `--datadir=${dbDataDir.replace(/\\/g, '/')}`,
         `--port=${MYSQL_PORT}`,
-        '--bind-address=127.0.0.1',
-        '--console'
-      ], {
+        '--bind-address=127.0.0.1'
+      ];
+      if (isWin) {
+        mysqlArgs.push('--console');
+      }
+
+      mysqlProcess = spawn(mysqldExe, mysqlArgs, {
         stdio: 'ignore',
-        windowsHide: true,
+        windowsHide: isWin,
         detached: false
       });
 
@@ -88,16 +128,21 @@ function startEmbeddedEngine() {
       });
     }
 
-    // 3. Spawn portable PHP built-in web server on port 48201
-    if (fs.existsSync(phpExe)) {
-      phpProcess = spawn(phpExe, [
-        '-c', phpIni,
+    // 3. Spawn portable / system PHP built-in web server on port 48201
+    if (phpExe && fs.existsSync(phpExe)) {
+      const phpArgs = [];
+      if (fs.existsSync(phpIni)) {
+        phpArgs.push('-c', phpIni);
+      }
+      phpArgs.push(
         '-S', `127.0.0.1:${LOCAL_PORT}`,
         '-t', htdocsDir,
         routerPhp
-      ], {
+      );
+
+      phpProcess = spawn(phpExe, phpArgs, {
         stdio: 'ignore',
-        windowsHide: true,
+        windowsHide: isWin,
         detached: false
       });
 
@@ -113,17 +158,23 @@ function startEmbeddedEngine() {
 function stopEmbeddedEngine() {
   try {
     if (phpProcess && !phpProcess.killed) {
-      try { process.kill(phpProcess.pid); } catch (e) {}
+      try { process.kill(phpProcess.pid, isWin ? undefined : 'SIGTERM'); } catch (e) {}
       phpProcess = null;
     }
     if (mysqlProcess && !mysqlProcess.killed) {
-      try { process.kill(mysqlProcess.pid); } catch (e) {}
+      try { process.kill(mysqlProcess.pid, isWin ? undefined : 'SIGTERM'); } catch (e) {}
       mysqlProcess = null;
     }
-    // Cleanup any lingering instances on Windows
-    try {
-      execSync(`taskkill /F /IM mysqld.exe /FI "MEMUSAGE gt 1000"`, { stdio: 'ignore' });
-    } catch (e) {}
+    // Cleanup any lingering instances on Windows / Linux
+    if (isWin) {
+      try {
+        execSync(`taskkill /F /IM mysqld.exe /FI "MEMUSAGE gt 1000"`, { stdio: 'ignore' });
+      } catch (e) {}
+    } else {
+      try {
+        execSync(`pkill -f "mysqld.*--port=${MYSQL_PORT}"`, { stdio: 'ignore' });
+      } catch (e) {}
+    }
   } catch (e) {}
 }
 
@@ -142,7 +193,7 @@ function createWindow() {
     minWidth: 960,
     minHeight: 640,
     title: getAppTitle(),
-    icon: path.join(__dirname, 'icon.ico'),
+    icon: getAppIcon(),
     backgroundColor: '#09090b',
     show: false,
     webPreferences: {
@@ -262,7 +313,7 @@ function checkServerReady(port, maxTries, intervalMs, callback) {
 }
 
 function createTray() {
-  const iconPath = path.join(__dirname, 'icon.ico');
+  const iconPath = getAppIcon();
   tray = new Tray(iconPath);
   tray.setToolTip('Jurnal Guru Digital (Database Komputer Lokal)');
 

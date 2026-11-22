@@ -1,45 +1,48 @@
-# Jurnal Guru Digital - Aplikasi Windows Desktop Standalone (100% Offline)
+# Jurnal Guru Digital - Aplikasi Desktop Standalone (Windows & Linux Edition)
 
-Aplikasi desktop resmi **Jurnal Guru Digital - Kurikulum Merdeka** untuk sistem operasi Windows.
-Didesain khusus untuk Bapak/Ibu Guru agar dapat mengelola jurnal pembelajaran, absensi, penilaian, agenda mengajar, dan administrasi guru secara cepat dan mandiri tanpa memerlukan koneksi internet dan tanpa memerlukan server eksternal/XAMPP.
+Aplikasi desktop resmi **Jurnal Guru Digital - Kurikulum Merdeka** untuk sistem operasi **Windows** dan **Linux** (Ubuntu, Debian, Linux Mint, Fedora, Arch, dll).
+Didesain khusus untuk Bapak/Ibu Guru agar dapat mengelola jurnal pembelajaran, absensi, penilaian, agenda mengajar, dan administrasi guru secara cepat dan mandiri tanpa memerlukan koneksi internet dan tanpa server eksternal.
 
 ---
 
-## ✨ Fitur Unggulan Versi Windows Desktop
-1. **100% Offline & Mandiri (Zero Setup)**:
-   - Dilengkapi embedded engine database lokal (MariaDB & PHP portable) otomatis.
-   - Tidak memerlukan instalasi XAMPP, Apache, atau internet.
+## ✨ Fitur Unggulan
+1. **100% Offline & Mandiri**:
+   - Berjalan mandiri tanpa memerlukan koneksi internet.
+   - Menggunakan database lokal komputer yang aman dan privat.
 2. **Login Langsung & Simpel**:
-   - Membuka aplikasi langsung ke formulir login tanpa halaman perantara (landing page).
-   - Form pendaftaran akun simpel (cukup Nama Guru dan Password).
+   - Langsung membuka halaman formulir login/dashboard.
+   - Pendaftaran akun praktis (hanya Nama Guru dan Password).
 3. **Pemulihan Kata Sandi Mandiri (Offline)**:
-   - Fitur lupa kata sandi offline menggunakan PIN Keamanan 4-6 digit terenkripsi BCrypt.
+   - Fitur lupa kata sandi offline menggunakan PIN Keamanan pribadi 4-6 digit (terenkripsi BCrypt).
 4. **Proteksi Ekstra Terintegrasi**:
    - DevTools Chromium & pintasan inspeksi (`F12`, `Ctrl+Shift+I`, `Ctrl+U`) dinonaktifkan.
-   - Menu klik kanan / inspect element dikunci untuk mencegah pengubahan skrip tampilan.
-   - Database lokal terisolasi di folder sistem privat `%APPDATA%\jurnal-guru-desktop\db_data`.
+   - Menu klik kanan / inspect element dikunci untuk menjaga keamanan antarmuka dan integritas data.
 
 ---
 
-## 🚀 Cara Menjalankan Langsung (Mode Pengembangan / Test)
-Cukup jalankan file:
-👉 **`BUKA_APLIKASI.bat`**
-
-Aplikasi akan otomatis menginstal dependensi (jika belum ada) lalu membuka jendela aplikasi desktop mandiri.
+## 🪟 Panduan untuk Pengguna Windows
+- **Menjalankan langsung (Development / Test)**:
+  👉 Klik 2x file `BUKA_APLIKASI.bat`
+- **Membangun Installer (.exe)**:
+  👉 Klik 2x file `BUILD_INSTALLER.bat` atau jalankan `npm run dist:win`
+  - Hasil paket instalasi di folder `dist/`:
+    1. `Jurnal Guru Digital Setup 1.0.0.exe` (Installer Resmi)
+    2. `Jurnal Guru Digital 1.0.0.exe` (Versi Portable)
 
 ---
 
-## 📦 Cara Membangun Installer `.exe`
-Jalankan file:
-👉 **`BUILD_INSTALLER.bat`**
-atau jalankan:
-```bash
-npm run dist
-```
-
-Output paket instalasi akan tersimpan di dalam folder **`dist/`**:
-1. **`Jurnal Guru Digital Setup 1.0.0.exe`** : Installer resmi untuk Windows (lengkap dengan desktop & start menu shortcut).
-2. **`Jurnal Guru Digital 1.0.0.exe`** : Versi Portable (dapat langsung dibuka dari Flashdisk tanpa perlu instalasi).
+## 🐧 Panduan untuk Pengguna Linux
+- **Menjalankan langsung**:
+  ```bash
+  chmod +x buka-aplikasi.sh
+  ./buka-aplikasi.sh
+  ```
+- **Membangun Paket Linux (AppImage & deb)**:
+  ```bash
+  chmod +x BUILD_LINUX.sh
+  ./BUILD_LINUX.sh
+  ```
+- **Panduan lengkap Linux**: Baca file [PANDUAN_LINUX.md](PANDUAN_LINUX.md).
 
 ---
 

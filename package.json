@@ -1,7 +1,8 @@
 {
   "name": "jurnal-guru-desktop",
   "version": "1.0.0",
-  "description": "Aplikasi Desktop Windows Resmi Jurnal Guru Digital & LMS Kurikulum Merdeka",
+  "description": "Aplikasi Desktop Resmi Jurnal Guru Digital & Kurikulum Merdeka (Windows & Linux Edition)",
+  "homepage": "https://github.com/anugrahamanu/jurnal-guru-desktop",
   "main": "main.js",
   "author": "Anugrah Amanu Pratama <anugrahmanu885@gmail.com>",
   "license": "ISC",
@@ -10,7 +11,11 @@
     "pack": "electron-builder --dir",
     "build:portable": "electron-builder --win portable",
     "build:installer": "electron-builder --win nsis",
-    "dist": "electron-builder --win"
+    "build:linux": "electron-builder --linux tar.gz zip AppImage deb",
+    "dist:win": "electron-builder --win",
+    "dist:linux": "electron-builder --linux tar.gz zip AppImage deb",
+    "dist": "electron-builder --win",
+    "dist:all": "electron-builder --win --linux tar.gz zip"
   },
   "devDependencies": {
     "electron": "^33.4.11",
@@ -53,6 +58,28 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "Jurnal Guru Digital"
+    },
+    "linux": {
+      "icon": "icon.png",
+      "target": [
+        "AppImage",
+        "deb",
+        "tar.gz"
+      ],
+      "category": "Education",
+      "synopsis": "Aplikasi Desktop Mandiri Jurnal Guru Digital & Kurikulum Merdeka",
+      "description": "Aplikasi desktop mandiri offline untuk pengelolaan jurnal mengajar dan administrasi guru Kurikulum Merdeka.",
+      "maintainer": "Anugrah Amanu Pratama <anugrahmanu885@gmail.com>"
+    },
+    "deb": {
+      "priority": "optional",
+      "depends": [
+        "libgtk-3-0",
+        "libnotify4",
+        "libnss3",
+        "libxss1",
+        "xdg-utils"
+      ]
     }
   }
 }
